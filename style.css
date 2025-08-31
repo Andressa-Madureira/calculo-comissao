@@ -1,0 +1,142 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #1E1E1E;  /* Fundo escuro neutro */
+    color: #D1D1D1;  /* Texto claro */
+    text-align: center;
+}
+
+.container {
+    background: #2A2A2A;  /* Fundo mais escuro, contrastando com os textos */
+    padding: 30px;
+    margin: 50px auto;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #FF5B5B;  /* Tom suave de vermelho coral, mais sóbrio */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    color: #FFF;  /* Cor do texto dos labels */
+}
+
+input, button, select {
+    padding: 12px;
+    border: 2px solid #444;  /* Borda suave e discreta */
+    border-radius: 8px;
+    width: 100%;
+    background-color: #333;  /* Fundo mais neutro para os inputs */
+    color: #fff;
+    font-size: 16px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #FF5B5B;  /* Destacar ao focar no campo */
+}
+
+button {
+    background-color: #FF5B5B;  /* Cor suave e vibrante para o botão */
+    color: white;
+    cursor: pointer;
+    border: none;
+    font-size: 18px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #FF2A2A;  /* Cor mais intensa ao passar o mouse */
+    transform: scale(1.05);  /* Leve efeito de crescimento */
+}
+
+h2, h3 {
+    margin-top: 20px;
+    color: #FFF;  /* Títulos mais claros para contraste */
+}
+
+.table-container {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #444;  /* Borda discreta */
+    text-align: center;
+}
+
+th {
+    background-color: #FF5B5B;
+    color: #FFF;
+}
+
+td {
+    background-color: #333;  /* Cor de fundo das células */
+}
+
+.btn-filtrar {
+    background-color: #4CAF50;  /* Verde suave para filtrar */
+    color: white;
+    margin-top: 10px;
+}
+
+.btn-filtrar:hover {
+    background-color: #45A049;  /* Tom mais forte no hover */
+}
+
+.btn-excluir {
+    background-color: #F44336;  /* Vermelho sutil para exclusão */
+    color: white;
+    margin-top: 10px;
+
+}
+
+.btn-excluir:hover {
+    background-color: #D32F2F;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .container {
+        width: 95%;
+    }
+
+    table {
+        min-width: 250px;
+    }
+
+    input, button, select {
+        font-size: 14px;
+    }
+
+    th, td {
+        font-size: 12px;
+        padding: 6px;
+    }
+}
