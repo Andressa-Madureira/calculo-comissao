@@ -13,7 +13,7 @@ frm.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const valorRecebido = parseFloat(frm.inRecebido.value);
-    const viagem = frm.inViagem.value;
+    const viagem = frm.inServico.value;
     const mes = frm.idMes.value;
 
     const comissao = valorRecebido * 0.40;
@@ -153,7 +153,7 @@ function atualizarTotais(mesesSelecionados = []) {
 // Limpa os campos do formulário
 function limparCampos() {
     frm.inRecebido.value = "";
-    frm.inViagem.value = "";
+    frm.inServico.value = "";
     frm.idMes.value = "";
 }
 
