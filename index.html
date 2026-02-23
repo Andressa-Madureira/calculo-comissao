@@ -6,33 +6,64 @@
     <title>Cálculo de Comissão</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Estilos específicos dos radios de serviço (moved from body) */
+        .servico-container { display: flex; gap: 10px; margin-top: 8px; }
+        .btn-radio { flex: 1; cursor: pointer; }
+        .btn-radio input { display: none; }
+        .btn-radio span {
+            display: block; padding: 10px; background-color: #9b2222; border: 2px solid #ddd;
+            border-radius: 8px; text-align: center; font-weight: bold; transition: 0.3s;
+        }
+        .btn-radio input:checked + span { background-color: #ffc107; border-color: #e0a800; color: #000; }
+    </style>
 </head>
 <body>
     <main>
         <div class="container">
-            <h1>Cálculo de Comissão</h1>
+            <h1>Cálculo de Comissão Manicure/Pedicure</h1>
 
             <form id="comissaoForm">
                 <label for="inRecebido">Valor do Serviço R$:</label>
-                <input type="number" id="inRecebido" min="0" step="0.01" required>
+                <input type="number" id="inRecebido" name="inRecebido" min="0" step="0.01" placeholder="Ex: 150.00" required>
 
-                <label for="inServico">Qual serviço foi realizado? </label>
-                <input type="text" id="inServico" required>
+                <label>Qual serviço foi realizado?</label>
+    <div class="servico-container">
+        <label class="btn-radio">
+            <input type="radio" name="servico" value="Manicure" required>
+            <span>Manicure</span>
+        </label>
 
-                <label for="idMes" class="label">Selecione o Mês:</label>
-                <input type="text" id="idMes" name="mes" placeholder="MM/YYYY" />
+        <label class="btn-radio">
+            <input type="radio" name="servico" value="Pedicure">
+            <span>Pedicure</span>
+        </label>
+        
+        <label class="btn-radio">
+            <input type="radio" name="servico" value="Ambos">
+            <span>Ambos</span>
+        </label>
+    </div>
 
-                <button type="submit" class="btn-comissao">Calcular Comissão</button>
+                <label for="idMes" class="label">Selecione o Período:</label>
+                <input type="month" id="idMes" name="idMes" title="Clique para abrir o calendário e escolher o mês/ano" required />
+                <small class="hint">📅 Clique no ícone do calendário para selecionar o período</small>
+
+                <button type="submit" class="btn-comissao">💵 Calcular Comissão</button>
             </form>
 
-            <h2 id="resultado"></h2>
+            <div id="mensagemSucesso" class="msg-sucesso" style="display: none;"></div>
+            <h2 id="resultado" class="resultado-destaque"></h2>
 
-            <h3>Histórico de Comissões</h3>
-            <label for="filtroMes">Filtrar por meses:</label>
-            <select id="filtroMes" multiple>
-               
-            </select>
-            <button onclick="filtrarHistorico()" class="btn-filtrar">Filtrar</button>
+            <h3>📄 Histórico de Comissões</h3>
+            <div class="filtro-container">
+                <label for="filtroMes">Filtrar por meses:</label>
+                <select id="filtroMes" multiple>
+                   
+                </select>
+                <button onclick="filtrarHistorico()" class="btn-filtrar">🔍 Filtrar</button>
+            </div>
             
 
             <div class="table-container">
@@ -50,9 +81,12 @@
                 </table>
             </div>
 
-            <button id="excluirSelecionados" onclick="excluirSelecionados()" class="btn-excluir">Excluir Selecionados</button>
+            <button id="excluirSelecionados" onclick="excluirSelecionados()" class="btn-excluir">🗑️ Excluir Selecionados</button>
 
-            <h3>Total de Comissão <span id="totalComissao">R$ 0,00</span></h3>
+            <div class="total-container">
+                <h3>Total de Comissão</h3>
+                <p class="total-valor"><span id="totalComissao">R$ 0,00</span></p>
+            </div>
         </div>
     </main>
     <script src="script.js"></script>

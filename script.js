@@ -2,20 +2,36 @@ const frm = document.getElementById('comissaoForm');
 const historicoTabela = document.getElementById('historicoTabela');
 const filtroMes = document.getElementById('filtroMes');
 
-
-
 const totalComissaoElem = document.getElementById('totalComissao');
-
-const totalComissao1Elem = document.getElementById('totalComissao1');
-const excluirSelecionadosBtn = document.getElementById('excluirSelecionados');
 
 frm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const valorRecebido = parseFloat(frm.inRecebido.value);
-    const viagem = frm.inServico.value;
-    const mes = frm.idMes.value;
+    const valorRecebido = parseFloat(document.getElementById('inRecebido').value);
+    const servicoSelecionado = document.querySelector('input[name="servico"]:checked');
 
+    if (!servicoSelecionado) {
+        alert("Selecione o serviço realizado!");
+        return;
+    }
+
+    if (isNaN(valorRecebido) || valorRecebido < 0) {
+        alert("Informe um valor válido (>= 0).");
+        return;
+    }
+
+    const mesInput = document.getElementById('idMes').value.trim();
+    
+    if (!mesInput) {
+        alert("Selecione um período.");
+        return;
+    }
+    
+    // Converte de YYYY-MM para MM/YYYY
+    const [ano, mes_num] = mesInput.split('-');
+    const mes = `${mes_num}/${ano}`;
+
+    const viagem = servicoSelecionado.value;
     const comissao = valorRecebido * 0.40;
 
     const lancamento = {
@@ -31,7 +47,8 @@ frm.addEventListener("submit", (e) => {
 
     exibirLancamentos();
     atualizarTotais();
-    limparCampos(); 
+    mostrarMensagemSucesso(`✅ Comissão de R$ ${comissao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} adicionada!`);
+    limparCampos();
 });
 
 
@@ -46,8 +63,8 @@ function exibirLancamentos() {
             <td><input type="checkbox" class="checkbox" data-index="${index}"></td>
             <td>${lancamento.mes}</td>
             <td>${lancamento.viagem}</td>
-            <td>R$ ${lancamento.valorRecebido.toFixed(2)}</td>
-            <td>R$ ${lancamento.comissao.toFixed(2)}</td>
+            <td>R$ ${lancamento.valorRecebido.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+            <td>R$ ${lancamento.comissao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
         `;
 
         historicoTabela.appendChild(tr);
@@ -70,31 +87,8 @@ function preencherFiltroMeses() {
     });
 }
 
-// Filtra o histórico de acordo com o mês selecionado
+// Filtra o histórico de acordo com os meses selecionados (suporta seleção múltipla)
 function filtrarHistorico() {
-    const mesSelecionado = filtroMes.value;
-    let lancamentos = JSON.parse(localStorage.getItem("lancamentos")) || [];
-
-    if (mesSelecionado) {
-        lancamentos = lancamentos.filter(l => l.mes === mesSelecionado);
-    }
-
-    historicoTabela.innerHTML = "";
-
-    lancamentos.forEach((lancamento, index) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td><input type="checkbox" class="checkbox" data-index="${index}"></td>
-            <td>${lancamento.mes}</td>
-            <td>${lancamento.viagem}</td>
-            <td>R$ ${lancamento.valorRecebido.toFixed(2)}</td>
-            <td>R$ ${lancamento.comissao.toFixed(2)}</td>
-        `;
-        historicoTabela.appendChild(tr);
-    });
-
-    atualizarTotais(mesSelecionado);
-}function filtrarHistorico() {
     const mesesSelecionados = Array.from(filtroMes.selectedOptions).map(option => option.value);
     let lancamentos = JSON.parse(localStorage.getItem("lancamentos")) || [];
 
@@ -110,8 +104,8 @@ function filtrarHistorico() {
             <td><input type="checkbox" class="checkbox" data-index="${index}"></td>
             <td>${lancamento.mes}</td>
             <td>${lancamento.viagem}</td>
-            <td>R$ ${lancamento.valorRecebido.toFixed(2)}</td>
-            <td>R$ ${lancamento.comissao.toFixed(2)}</td>
+            <td>R$ ${lancamento.valorRecebido.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+            <td>R$ ${lancamento.comissao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
         `;
         historicoTabela.appendChild(tr);
     });
@@ -121,13 +115,14 @@ function filtrarHistorico() {
 
 // Exclui os lançamentos selecionados
 function excluirSelecionados() {
-    const checkboxes = document.querySelectorAll('.checkbox:checked');
+    const checkboxes = Array.from(document.querySelectorAll('.checkbox:checked'));
+    if (checkboxes.length === 0) return;
+
     let lancamentos = JSON.parse(localStorage.getItem("lancamentos")) || [];
 
-    checkboxes.forEach(checkbox => {
-        const index = checkbox.dataset.index;
-        lancamentos.splice(index, 1);
-    });
+    // Remover índices em ordem decrescente para não quebrar os índices restantes
+    const indices = checkboxes.map(cb => Number(cb.dataset.index)).sort((a, b) => b - a);
+    indices.forEach(i => lancamentos.splice(i, 1));
 
     localStorage.setItem("lancamentos", JSON.stringify(lancamentos));
     exibirLancamentos();
@@ -144,17 +139,30 @@ function atualizarTotais(mesesSelecionados = []) {
 
     // Calcula o total da comissão dos meses filtrados
     let total = lancamentos.reduce((acc, lancamento) => acc + lancamento.comissao, 0);
-    totalComissaoElem.textContent = `R$ ${total.toFixed(2)}`;
-
-    //Calculta o total recebido de comissões(independe do período)
-    let total1 = lancamentos.reduce((acc, lancamento) => acc + lancamento.comissao, 0);
-    totalComissao1Elem.textContent = `R$ ${total.toFixed(2)}`;
+    totalComissaoElem.textContent = `R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
 }
 // Limpa os campos do formulário
 function limparCampos() {
-    frm.inRecebido.value = "";
-    frm.inServico.value = "";
-    frm.idMes.value = "";
+    document.getElementById('inRecebido').value = "";
+    const checked = document.querySelector('input[name="servico"]:checked');
+    if (checked) checked.checked = false;
+    document.getElementById('idMes').value = "";
+    document.getElementById('resultado').textContent = "";
+}
+
+function mostrarMensagemSucesso(mensagem) {
+    const msgElement = document.getElementById('mensagemSucesso');
+    msgElement.textContent = mensagem;
+    msgElement.style.display = 'block';
+    
+    // Remove a mensagem após 3 segundos
+    setTimeout(() => {
+        msgElement.style.animation = 'fadeOut 0.3s ease-out';
+        setTimeout(() => {
+            msgElement.style.display = 'none';
+            msgElement.style.animation = '';
+        }, 300);
+    }, 3000);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
